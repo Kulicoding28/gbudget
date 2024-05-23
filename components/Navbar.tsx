@@ -46,7 +46,7 @@ function MobileNavbar() {
                   key={item.label}
                   link={item.link}
                   label={item.label}
-                  // clickCallback={() => setIsOpen((prev) => !prev)}
+                  clickCallback={() => setIsOpen((prev) => !prev)}
                 />
               ))}
             </div>
@@ -98,7 +98,7 @@ function NavbarItem({
       <Link
         href={link}
         className={cn(
-          buttonVariants({ variant: "ghost" }),
+          buttonVariants({ variant: "default" }),
           "w-full justify-start text-lg text-muted-foreground hover:text-foreground",
           isActive && "text-foreground"
         )}
