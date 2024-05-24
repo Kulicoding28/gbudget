@@ -29,7 +29,7 @@ model Transaction {
   createdAt DateTime @default(now())
   updateAt DateTime @default(now())
 
-  amount Int
+  amount Float
   description String
   date DateTime
   userId String
@@ -44,8 +44,8 @@ model MonthHistory {
   day Int
   month Int
   year Int
-  income Int
-  expanse Int
+  income Float
+  expanse Float
 
   @@id([day,month,year,userId])
 }
@@ -55,8 +55,8 @@ model YearHistory {
   userId String
   month Int
   year Int
-  income Int
-  expanse Int
+  income Float
+  expanse Float
 
   @@id([month,year,userId])
 }
