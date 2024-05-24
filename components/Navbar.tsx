@@ -34,7 +34,7 @@ function MobileNavbar() {
       <nav className="container flex items-center justify-between px-8">
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button variant={"default"} size={"icon"}>
+            <Button variant={"ghost"} size={"icon"}>
               <Menu />
             </Button>
           </SheetTrigger>
@@ -105,7 +105,7 @@ function NavbarItem({
       <Link
         href={link}
         className={cn(
-          buttonVariants({ variant: "default" }),
+          buttonVariants({ variant: "ghost" }),
           "w-full justify-start text-lg text-muted-foreground hover:text-foreground",
           isActive && "text-foreground"
         )}
