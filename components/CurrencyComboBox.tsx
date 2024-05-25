@@ -21,6 +21,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { Currencies, Currency } from "@/lib/currencies";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonWrapper from "./SkeletonWrapper";
+import { UserSettings } from "@prisma/client";
 
 export function CurrencyComboBox() {
   const [open, setOpen] = React.useState(false);
@@ -29,10 +30,19 @@ export function CurrencyComboBox() {
     null
   );
 
-  const userSettings = useQuery({
+  const userSettings = useQuery<UserSettings>({
     queryKey: ["userSettings"],
     queryFn: () => fetch("/api/user-settings").then((res) => res.json()),
   });
+
+  // default to rupiah
+  React.useEffect(() => {
+    if (!userSettings.data) return;
+    const userCurrency = Currencies.find(
+      (currency) => currency.value === userSettings.data.currency
+    );
+    if (userCurrency) setSelectedOption(userCurrency);
+  }, [userSettings.data]);
 
   if (isDesktop) {
     return (
@@ -59,18 +69,23 @@ export function CurrencyComboBox() {
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline" className="w-full justify-start">
-          {selectedOption ? <>{selectedOption.label}</> : <>+ Set Currency</>}
-        </Button>
-      </DrawerTrigger>
-      <DrawerContent>
-        <div className="mt-4 border-t">
-          <OptionList setOpen={setOpen} setSelectedOption={setSelectedOption} />
-        </div>
-      </DrawerContent>
-    </Drawer>
+    <SkeletonWrapper isLoading={userSettings.isFetching}>
+      <Drawer open={open} onOpenChange={setOpen}>
+        <DrawerTrigger asChild>
+          <Button variant="outline" className="w-full justify-start">
+            {selectedOption ? <>{selectedOption.label}</> : <>+ Set Currency</>}
+          </Button>
+        </DrawerTrigger>
+        <DrawerContent>
+          <div className="mt-4 border-t">
+            <OptionList
+              setOpen={setOpen}
+              setSelectedOption={setSelectedOption}
+            />
+          </div>
+        </DrawerContent>
+      </Drawer>
+    </SkeletonWrapper>
   );
 }
 
