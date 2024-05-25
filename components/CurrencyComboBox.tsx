@@ -20,6 +20,7 @@ import {
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Currencies, Currency } from "@/lib/currencies";
 import { useQuery } from "@tanstack/react-query";
+import SkeletonWrapper from "./SkeletonWrapper";
 
 export function CurrencyComboBox() {
   const [open, setOpen] = React.useState(false);
@@ -33,20 +34,27 @@ export function CurrencyComboBox() {
     queryFn: () => fetch("/api/user-settings").then((res) => res.json()),
   });
 
-  console.log("@@@ USER SETTINGS", userSettings);
-
   if (isDesktop) {
     return (
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" className="w-full justify-start">
-            {selectedOption ? <>{selectedOption.label}</> : <>+ Set Currency</>}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[200px] p-0" align="start">
-          <OptionList setOpen={setOpen} setSelectedOption={setSelectedOption} />
-        </PopoverContent>
-      </Popover>
+      <SkeletonWrapper isLoading={userSettings.isFetching}>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" className="w-full justify-start">
+              {selectedOption ? (
+                <>{selectedOption.label}</>
+              ) : (
+                <>+ Set Currency</>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] p-0" align="start">
+            <OptionList
+              setOpen={setOpen}
+              setSelectedOption={setSelectedOption}
+            />
+          </PopoverContent>
+        </Popover>
+      </SkeletonWrapper>
     );
   }
 
