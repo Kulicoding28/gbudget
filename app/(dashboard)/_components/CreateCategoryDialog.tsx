@@ -2,8 +2,10 @@
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -126,7 +128,12 @@ function CreateCategoryDialog({ type }: Props) {
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-full">
-                        <Picker data={data} />
+                        <Picker
+                          data={data}
+                          onEmojiSelect={(emoji: { native: string }) => {
+                            field.onChange(emoji.native);
+                          }}
+                        />
                       </PopoverContent>
                     </Popover>
                   </FormControl>
@@ -138,6 +145,20 @@ function CreateCategoryDialog({ type }: Props) {
             />
           </form>
         </Form>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button
+              type="button"
+              variant={"secondary"}
+              onClick={() => {
+                form.reset();
+              }}
+            >
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button>Save</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
