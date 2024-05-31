@@ -25,9 +25,13 @@ import {
   CreateCategorySchemaType,
 } from "@/schema/categories";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusSquare } from "lucide-react";
+import { CircleOff, PlusSquare } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import Picker from "@emoji-mart/react";
+import data from "@emoji-mart/data";
+
+import { PopoverContent } from "@radix-ui/react-popover";
 
 interface Props {
   type: TransactionType;
@@ -103,14 +107,27 @@ function CreateCategoryDialog({ type }: Props) {
                           className="h-[100px] w-full"
                         >
                           {form.watch("icon") ? (
-                            <div>Selected icon</div>
+                            <div className="flex flex-col items-center gap-2">
+                              <span className="text-5xl" role="img">
+                                {field.value}
+                              </span>
+                              <p className="text-sm text-muted-foreground">
+                                Click to change
+                              </p>
+                            </div>
                           ) : (
                             <div className="flex flex-col items-center gap-2">
-                              No Slection
+                              <CircleOff className="h-[48px] w-[48px]" />
+                              <p className="text-sm text-muted-foreground">
+                                Click to select
+                              </p>
                             </div>
                           )}
                         </Button>
                       </PopoverTrigger>
+                      <PopoverContent className="w-full">
+                        <Picker data={data} />
+                      </PopoverContent>
                     </Popover>
                   </FormControl>
                   <FormDescription>
