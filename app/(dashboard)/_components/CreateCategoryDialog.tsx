@@ -41,13 +41,13 @@ import {
 } from "@tanstack/react-query";
 import { CreateCategory } from "../_actions/categories";
 import { Category } from "@prisma/client";
-import { fromJSON } from "postcss";
 import { toast } from "sonner";
 
 interface Props {
   type: TransactionType;
+  SuccessCallback: (category: Category) => void;
 }
-function CreateCategoryDialog({ type }: Props) {
+function CreateCategoryDialog({ type, SuccessCallback }: Props) {
   const [open, setOpen] = useState(false);
 
   const form = useForm<CreateCategorySchemaType>({
@@ -69,6 +69,7 @@ function CreateCategoryDialog({ type }: Props) {
         id: "create-category",
       });
 
+      SuccessCallback(data);
       await queryClient.invalidateQueries({
         queryKey: ["categories"],
       });

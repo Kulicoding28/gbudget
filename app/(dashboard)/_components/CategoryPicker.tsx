@@ -16,7 +16,7 @@ import {
 import { TransactionType } from "@/lib/types";
 import { Category } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import React from "react";
+import React, { useCallback } from "react";
 import CreateCategoryDialog from "./CreateCategoryDialog";
 import { CommandEmpty } from "cmdk";
 import { cn } from "@/lib/utils";
@@ -38,6 +38,14 @@ function CategoryPicker({ type }: Props) {
 
   const selectedCategory = categoriesQuery.data?.find(
     (category: Category) => category.name === value
+  );
+
+  const sucessCallback = useCallback(
+    (category: Category) => {
+      setValue(category.name);
+      setOpen((prev) => !prev);
+    },
+    [setValue, setOpen]
   );
 
   return (
@@ -64,7 +72,7 @@ function CategoryPicker({ type }: Props) {
           }}
         >
           <CommandInput placeholder="search category..." />
-          <CreateCategoryDialog type={type} />
+          <CreateCategoryDialog type={type} SuccessCallback={sucessCallback} />
           <CommandEmpty>
             <p>Category not found</p>
             <p className="text-xs text-muted-foreground">
