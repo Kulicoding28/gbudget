@@ -42,6 +42,7 @@ import {
 import { CreateCategory } from "../_actions/categories";
 import { Category } from "@prisma/client";
 import { toast } from "sonner";
+import { useTheme } from "next-themes";
 
 interface Props {
   type: TransactionType;
@@ -57,6 +58,7 @@ function CreateCategoryDialog({ type, SuccessCallback }: Props) {
     },
   });
   const queryClient = useQueryClient();
+  const theme = useTheme();
   const { mutate, isPending } = useMutation({
     mutationFn: CreateCategory,
     onSuccess: async (data: Category) => {
@@ -130,10 +132,10 @@ function CreateCategoryDialog({ type, SuccessCallback }: Props) {
                 <FormItem>
                   <FormLabel>Name</FormLabel>
                   <FormControl>
-                    <Input defaultValue={""} {...field} />
+                    <Input placeholder="category" {...field} />
                   </FormControl>
                   <FormDescription>
-                    transaction description (optional)
+                    This is how your category will appear in the app
                   </FormDescription>
                 </FormItem>
               )}
@@ -173,6 +175,7 @@ function CreateCategoryDialog({ type, SuccessCallback }: Props) {
                       </PopoverTrigger>
                       <PopoverContent className="w-full">
                         <Picker
+                          theme={theme.resolvedTheme}
                           data={data}
                           onEmojiSelect={(emoji: { native: string }) => {
                             field.onChange(emoji.native);

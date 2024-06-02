@@ -13,7 +13,7 @@ import {
   CreateTransactionSchema,
   CreateTransactionSchemaType,
 } from "@/schema/transaction";
-import { ReactNode } from "react";
+import { ReactNode, useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -39,6 +39,13 @@ function CreateTransactionDialog({ trigger, type }: Props) {
       date: new Date(),
     },
   });
+
+  const handleCategoryChange = useCallback(
+    (value: string) => {
+      form.setValue("category", value);
+    },
+    [form]
+  );
 
   return (
     <Dialog>
@@ -75,7 +82,6 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
-
             <FormField
               control={form.control}
               name="amount"
@@ -91,7 +97,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
-
+            transaction:{form.watch("category")}
             <div className="flex items-center gap-2 justify-between">
               <FormField
                 control={form.control}
@@ -100,7 +106,10 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                   <FormItem>
                     <FormLabel>Category</FormLabel>
                     <FormControl>
-                      <CategoryPicker type={type} />
+                      <CategoryPicker
+                        type={type}
+                        onChange={handleCategoryChange}
+                      />
                     </FormControl>
                     <FormDescription>
                       Select a category for this transaction
