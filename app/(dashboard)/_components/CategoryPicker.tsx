@@ -16,7 +16,7 @@ import {
 import { TransactionType } from "@/lib/types";
 import { Category } from "@prisma/client";
 import { useQuery } from "@tanstack/react-query";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import CreateCategoryDialog from "./CreateCategoryDialog";
 import { CommandEmpty } from "cmdk";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,7 @@ function CategoryPicker({ type, onChange }: Props) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
-  useState(() => {
+  useEffect(() => {
     if (!value) return;
     //when the value change , call onChange callback
     onChange(value);

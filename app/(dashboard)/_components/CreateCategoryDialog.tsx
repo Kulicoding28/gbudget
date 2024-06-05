@@ -178,7 +178,7 @@ function CreateCategoryDialog({ type, SuccessCallback }: Props) {
                           theme={theme.resolvedTheme}
                           data={data}
                           onEmojiSelect={(emoji: { native: string }) => {
-                            field.onChange(emoji.native);
+                            field.onChange(emoji.native)
                           }}
                         />
                       </PopoverContent>
