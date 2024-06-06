@@ -41,6 +41,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreateTransaction } from "../_actions/transaction";
 import { toast } from "sonner";
+import { DateUTCDate } from "@/lib/helpers";
 
 interface Props {
   trigger: ReactNode;
@@ -84,6 +85,18 @@ function CreateTransactionDialog({ trigger, type }: Props) {
     },
   });
 
+  const onSubmit = useCallback(
+    (values: CreateTransactionSchemaType) => {
+      toast.loading("Creating Transaction...", {
+        id: "create-transaction",
+      });
+      mutate({
+        ...values,
+        date: DateUTCDate(values.date),
+      });
+    },
+    [mutate]
+  );
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
@@ -103,12 +116,12 @@ function CreateTransactionDialog({ trigger, type }: Props) {
           </DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form className="space-y-4">
+          <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
             <FormField
               control={form.control}
               name="description"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>Description</FormLabel>
                   <FormControl>
                     <Input defaultValue={""} {...field} />
@@ -134,13 +147,13 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 </FormItem>
               )}
             />
-            transaction:{form.watch("category")}
+            {/* transaction:{form.watch("category")} */}
             <div className="flex items-center gap-2 justify-between">
               <FormField
                 control={form.control}
                 name="category"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Category</FormLabel>
                     <FormControl>
                       <CategoryPicker
@@ -159,7 +172,7 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                 control={form.control}
                 name="date"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="flex flex-col">
                     <FormLabel>Transaction Date</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
@@ -184,7 +197,10 @@ function CreateTransactionDialog({ trigger, type }: Props) {
                         <Calendar
                           mode="single"
                           selected={field.value}
-                          onSelect={field.onChange}
+                          onSelect={(value) => {
+                            if (!value) return;
+                            field.onChange(value);
+                          }}
                           initialFocus
                         />
                       </PopoverContent>
