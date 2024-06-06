@@ -1,7 +1,6 @@
 import prisma from "@/lib/db";
 import { OverviewQuerySchema } from "@/schema/overview";
 import { currentUser } from "@clerk/nextjs/server";
-import { IncomingMessage } from "http";
 import { redirect } from "next/navigation";
 
 export async function GET(request: Request) {
