@@ -3,6 +3,7 @@
 import { GetCategoriesStatsResponseType } from "@/app/api/stats/categories/route";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { DateUTCDate, GetFormatterCurrency } from "@/lib/helpers";
 import { TransactionType } from "@/lib/types";
 import { UserSettings } from "@prisma/client";
@@ -33,6 +34,14 @@ function CategoriesStats({ userSettings, from, to }: Props) {
         <CategoriesCard
           formatter={formatter}
           type="income"
+          data={statsQuery.data || []}
+        />
+      </SkeletonWrapper>
+
+      <SkeletonWrapper isLoading={statsQuery.isFetching}>
+        <CategoriesCard
+          formatter={formatter}
+          type="expanse"
           data={statsQuery.data || []}
         />
       </SkeletonWrapper>
@@ -72,6 +81,32 @@ function CategoriesCard({
               {type === "income" ? "incomes" : "expenses"}
             </p>
           </div>
+        )}
+        {filteredData.length > 0 && (
+          <ScrollArea className="h-60 w-full px-4">
+            <div className="flex w-full flex-col gap-4 p-4">
+              {filteredData.map((item) => {
+                const amount = item._sum?.amount || 0;
+                const percentage = (amount * 100) / (total || amount);
+
+                return (
+                  <div key={item.category} className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <span className="flex items-center text-gray-400">
+                        {item.categoryIcon} {item.category}
+                        <span className="ml-2 text-xs text-muted-foreground">
+                          ({percentage.toFixed(0)}%)
+                        </span>
+                      </span>
+                      <span className="text-sm text-gray-400">
+                        {formatter.format(amount)}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
         )}
       </div>
     </Card>
