@@ -28,7 +28,7 @@ function HistoryPeriodSelector({
 }: Props) {
   const historyPeriods = useQuery<getHistoryPeriodsResponseType>({
     queryKey: ["overview", "history", "periods"],
-    queryFn: () => fetch("/api/histori-period").then((res) => res.json()),
+    queryFn: () => fetch(`/api/histori-period`).then((res) => res.json()),
   });
   return (
     <div className="flex flex-wrap items-center gap-4">

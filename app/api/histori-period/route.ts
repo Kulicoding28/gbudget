@@ -34,4 +34,5 @@ async function getHistoryPeriods(userId: string) {
   if (years.length === 0) {
     return [new Date().getFullYear()];
   }
+  return years;
 }
