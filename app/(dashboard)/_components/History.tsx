@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { GetFormatterCurrency } from "@/lib/helpers";
 import { Period, Timeframe } from "@/lib/types";
 import { UserSettings } from "@prisma/client";
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import HistoryPeriodSelector from "./HistoryPeriodSelector";
 import { useQuery } from "@tanstack/react-query";
 import SkeletonWrapper from "@/components/SkeletonWrapper";
@@ -18,6 +18,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import CountUp from "react-countup";
+import { cn } from "@/lib/utils";
+import { format } from "path";
 
 function History({ userSettings }: { userSettings: UserSettings }) {
   const [timeframe, setTimeframe] = React.useState<Timeframe>("month");
@@ -154,6 +157,12 @@ function History({ userSettings }: { userSettings: UserSettings }) {
                     radius={4}
                     className="cusror-pointer"
                   />
+                  <Tooltip
+                    cursor={{ opacity: 0.1 }}
+                    content={(props) => (
+                      <CostumTooltip formatter={formatter} {...props} />
+                    )}
+                  />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -173,3 +182,78 @@ function History({ userSettings }: { userSettings: UserSettings }) {
 }
 
 export default History;
+
+function CostumTooltip({ active, payload, formatter }: any) {
+  if (!active || (!payload && payload.length === 0)) return null;
+
+  const data = payload[0].payload;
+  const { expanse, income } = data;
+
+  return (
+    <div className="min-w-[300px] rounded border bg-background p-4">
+      <TooltipRow
+        formatter={formatter}
+        label="Expanse"
+        value={expanse}
+        bgColor="bg-red-500"
+        textColor="text-red-500"
+      />
+
+      <TooltipRow
+        formatter={formatter}
+        label="Income"
+        value={income}
+        bgColor="bg-emerald-500"
+        textColor="text-emerald-500"
+      />
+
+      <TooltipRow
+        formatter={formatter}
+        label="Balance"
+        value={income - expanse}
+        bgColor="bg-gray-100"
+        textColor="text-foreground"
+      />
+    </div>
+  );
+}
+
+function TooltipRow({
+  label,
+  value,
+  bgColor,
+  textColor,
+  formatter,
+}: {
+  label: string;
+  textColor: string;
+  bgColor: string;
+  value: number;
+  formatter: Intl.NumberFormat;
+}) {
+  const formattingFn = useCallback(
+    (value: number) => {
+      return formatter.format(value);
+    },
+    [formatter]
+  );
+
+  return (
+    <div className="flex items-center gap-2">
+      <div className={cn("h-4 w-4 rounded-full", bgColor)} />
+      <div className="flex w-full justify-between">
+        <p className="text-sm text-muted-foreground">{label}</p>
+        <div className={cn("text-sm font-bold", textColor)}>
+          <CountUp
+            duration={0.5}
+            preserveValue
+            end={value}
+            decimals={0}
+            formattingFn={formattingFn}
+            className="text-sm"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
