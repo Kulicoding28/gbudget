@@ -40,7 +40,7 @@ export async function GET(request: Request) {
     year: queryParams.data.year,
   });
 
-  return new Response(JSON.stringify(data), {
+  return Response.json(data, {
     status: 200,
   });
 }
