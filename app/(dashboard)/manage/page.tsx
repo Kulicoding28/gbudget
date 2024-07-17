@@ -67,12 +67,12 @@ function CategoryList({ type }: { type: TransactionType }) {
                 <TrendingDown className="w-12 h-12 items-center rounded-lg p-2 text-red-500 bg-red-400/10" />
               ) : (
                 <TrendingUp className="w-12 h-12 items-center rounded-lg p-2 text-emerald-500 bg-emerald-400/10" />
-              )}
-            </div>
-            <div>
-              {type === "income" ? "Incomes" : "Expanse"} categories
-              <div className="text-sm text-muted-foreground">
-                Sorted by name
+              )}{" "}
+              <div>
+                {type === "income" ? "Incomes" : "Expanse"} categories
+                <div className="text-sm text-muted-foreground">
+                  Sorted by name
+                </div>
               </div>
             </div>
             <CreateCategoryDialog
