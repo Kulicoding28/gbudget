@@ -5,8 +5,10 @@ import { DateUTCDate } from "@/lib/helpers";
 import { useQuery } from "@tanstack/react-query";
 import {
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -40,6 +42,9 @@ export const columns: ColumnDef<TransactionHistoryRow>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Category" />
     ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
     cell: ({ row }) => (
       <div className="flex gap-2 capitalize">
         {row.original.categoryIcon}
@@ -47,7 +52,6 @@ export const columns: ColumnDef<TransactionHistoryRow>[] = [
       </div>
     ),
   },
-
   {
     accessorKey: "description",
     header: ({ column }) => (
@@ -77,6 +81,9 @@ export const columns: ColumnDef<TransactionHistoryRow>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="type" />
     ),
+    filterFn: (row, id, value) => {
+      return value.includes(row.getValue(id));
+    },
     cell: ({ row }) => (
       <div
         className={cn(
@@ -105,6 +112,7 @@ export const columns: ColumnDef<TransactionHistoryRow>[] = [
 ];
 function TransactionTable({ from, to }: Props) {
   const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   const history = useQuery<GetTransactionsHistoryResponseType>({
     queryKey: ["transactions", "history", from, to],
@@ -122,9 +130,12 @@ function TransactionTable({ from, to }: Props) {
     getCoreRowModel: getCoreRowModel(),
     state: {
       sorting,
+      columnFilters,
     },
     onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
   });
 
   const categoriesOptions = useMemo(() => {
@@ -148,6 +159,17 @@ function TransactionTable({ from, to }: Props) {
               title="Category"
               column={table.getColumn("category")}
               options={categoriesOptions}
+            />
+          )}
+
+          {table.getColumn("type") && (
+            <DataTableFacetedFilter
+              title="Type"
+              column={table.getColumn("type")}
+              options={[
+                { label: "Income", value: "income" },
+                { label: "Expanse", value: "expanse" },
+              ]}
             />
           )}
         </div>
