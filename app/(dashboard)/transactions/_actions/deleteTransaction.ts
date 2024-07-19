@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export async function DeleteTransaction(id: string) {
@@ -11,7 +12,7 @@ export async function DeleteTransaction(id: string) {
     redirect("/sign-in");
   }
 
-  const transaction = await prisma.transaction.delete({
+  const transaction = await prisma.transaction.findUnique({
     where: {
       userId: user.id,
       id,
