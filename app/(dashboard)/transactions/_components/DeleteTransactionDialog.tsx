@@ -30,8 +30,9 @@ function DeleteTransactionDialog({ open, setOpen, transactionId }: Props) {
       });
 
       await queryClient.invalidateQueries({
-        queryKey: ["Transactions"],
+        queryKey: ["Transactions", "history"],
       });
+      setOpen(false);
     },
     onError: () => {
       toast.error("Failed to delete category", {
